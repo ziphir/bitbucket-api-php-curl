@@ -155,5 +155,46 @@ class bitbucket
 	else
 	return false;
 	}
+	
+	function get_all_repo(){
+	$this->login(self::$user, self::$pass, self::$csrftoken, $echo = 0);
+	$ch = curl_init();
+	curl_setopt($ch, CURLOPT_URL, self::$base_url."/".self::$user."/");
+	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+	curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "GET");
+	curl_setopt($ch, CURLOPT_HEADER, 0);
+	curl_setopt($ch, CURLOPT_HTTPHEADER, array(""));  
+	curl_setopt($ch, CURLOPT_FOLLOWLOCATION, 1);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
+	curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
+	curl_setopt($ch, CURLOPT_COOKIEJAR, $_SESSION["cookie"]);
+	curl_setopt($ch, CURLOPT_COOKIEFILE, $_SESSION["cookie"]);
+	curl_setopt($ch, CURLOPT_COOKIE, "csrftoken=".self::$csrftoken);
+	curl_setopt($ch, CURLOPT_USERAGENT, self::$useragent);
+	curl_setopt($ch, CURLOPT_REFERER, self::$base_url);
+	$html = curl_exec($ch) or die(curl_error($ch));
+	$start = strpos($html, '<ul class="repository-list" data-current-status="all">') + 54;
+	$length = strpos($html, '</ul>', $start) - $start;
+	$html = substr($html, $start, $length);
+	$match = substr_count($html,'<li');
+	$repo = array();
+	$i = 0;
+	$start = 0;
+	while($i < $match){
+	$start = strpos($html, '<li class="iterable-item">', $start) + 26;
+	$length = strpos($html, '</li>', $start) - $start;
+	$repo[$i] = substr($html, $start, $length);
+	$i++;
+	}
+	$i = 0;
+	while($i < $match){
+	$start = strpos($repo[$i], '"execute"');
+	$start = strpos($repo[$i], ">", $start) +1;
+	$length = strpos($repo[$i], "<", $start) - $start;
+	$repo[$i] = substr($repo[$i], $start, $length);
+	$i++;
+	}
+	return $repo;
+	}
 }
 ?>

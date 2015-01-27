@@ -92,7 +92,7 @@ class bitbucket
 	$ch = curl_init();
 	curl_setopt($ch, CURLOPT_URL, self::$base_url."/!api/internal/repositories/".self::$user."/$repo_name/oecommits/");
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-	curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"branch\":\"$branch\",\"files\":[{\"path\":\"$file_name\",\"content\":\"$file_content\"}],\"message\":\"$file_name created online with Bitbucket\",\"parents\":[\"\"],\"repository\":{\"full_name\":\"".self::$user."/$repo_name\"},\"timestamp\":\"2015-01-27T14:23:49.531Z\",\"transient\":false}");
+	curl_setopt($ch, CURLOPT_POSTFIELDS, "{\"branch\":\"$branch\",\"files\":[{\"path\":\"$file_name\",\"content\":\"$file_content\"}],\"message\":\"$file_name created online with Bitbucket\",\"parents\":[\"".$this->raw_node()."\"],\"repository\":{\"full_name\":\"".self::$user."/$repo_name\"},\"timestamp\":\"2015-01-27T14:23:49.531Z\",\"transient\":false}");
 	curl_setopt($ch, CURLOPT_POST, 1);
 	curl_setopt($ch, CURLOPT_HEADER, 0);
 	curl_setopt($ch, CURLOPT_HTTPHEADER, array("Content-Type: application/json", "X-CSRFToken: ".self::$csrftoken));  
